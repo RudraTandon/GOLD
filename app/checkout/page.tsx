@@ -7,6 +7,45 @@ import UpiPaymentModal from '@/app/components/ui/UpiPaymentModal';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCart, CartItem } from '@/lib/CartContext';
 
+const INDIAN_STATES_AND_UTS = [
+  'Andaman and Nicobar Islands',
+  'Andhra Pradesh',
+  'Arunachal Pradesh',
+  'Assam',
+  'Bihar',
+  'Chandigarh',
+  'Chhattisgarh',
+  'Dadra and Nagar Haveli and Daman and Diu',
+  'Delhi',
+  'Goa',
+  'Gujarat',
+  'Haryana',
+  'Himachal Pradesh',
+  'Jammu and Kashmir',
+  'Jharkhand',
+  'Karnataka',
+  'Kerala',
+  'Ladakh',
+  'Lakshadweep',
+  'Madhya Pradesh',
+  'Maharashtra',
+  'Manipur',
+  'Meghalaya',
+  'Mizoram',
+  'Nagaland',
+  'Odisha',
+  'Puducherry',
+  'Punjab',
+  'Rajasthan',
+  'Sikkim',
+  'Tamil Nadu',
+  'Telangana',
+  'Tripura',
+  'Uttar Pradesh',
+  'Uttarakhand',
+  'West Bengal',
+];
+
 function CheckoutForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -281,18 +320,12 @@ function CheckoutForm() {
                   value={formData.state}
                   onChange={handleChange}
                 >
-                  <option value="">Select State</option>
-                  <option value="Delhi">Delhi</option>
-                  <option value="Maharashtra">Maharashtra</option>
-                  <option value="Karnataka">Karnataka</option>
-                  <option value="Tamil Nadu">Tamil Nadu</option>
-                  <option value="Uttar Pradesh">Uttar Pradesh</option>
-                  <option value="Gujarat">Gujarat</option>
-                  <option value="West Bengal">West Bengal</option>
-                  <option value="Rajasthan">Rajasthan</option>
-                  <option value="Telangana">Telangana</option>
-                  <option value="Punjab">Punjab</option>
-                  <option value="Haryana">Haryana</option>
+                  <option value="">Select State / UT</option>
+                  {INDIAN_STATES_AND_UTS.map((stateName) => (
+                    <option key={stateName} value={stateName}>
+                      {stateName}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
