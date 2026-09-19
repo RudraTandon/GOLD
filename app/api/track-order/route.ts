@@ -51,11 +51,18 @@ export async function GET(request: Request) {
         )
       `);
 
-    // Match by order_number (e.g. TND-984712) or UUID
+    // Match by order_number (e.g. TND-984712), numbers only (708325), or UUID
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(query);
+
     if (query.toUpperCase().startsWith('TND-')) {
       orderQuery = orderQuery.ilike('order_number', query);
-    } else {
+    } else if (isUuid) {
       orderQuery = orderQuery.or(`order_number.ilike.%${query}%,id.eq.${query}`);
+    } else if (/^\d+$/.test(query)) {
+      // User entered numeric digits only (e.g. 708325)
+      orderQuery = orderQuery.or(`order_number.ilike.TND-${query},order_number.ilike.%${query}%`);
+    } else {
+      orderQuery = orderQuery.ilike('order_number', `%${query}%`);
     }
 
     const { data: orders, error: orderError } = await orderQuery.limit(1);

@@ -4,6 +4,7 @@ import './globals.css';
 import AnnouncementBar from './components/layout/AnnouncementBar';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import { CartProvider } from '@/lib/CartContext';
 
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
 
@@ -21,12 +22,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={outfit.className}>
-        <AnnouncementBar />
-        <Header />
-        <main style={{ minHeight: '80vh' }}>
-          {children}
-        </main>
-        <Footer />
+        <CartProvider>
+          <AnnouncementBar />
+          <Header />
+          <main style={{ minHeight: '80vh' }}>
+            {children}
+          </main>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );

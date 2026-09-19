@@ -1,15 +1,44 @@
 "use client";
 
 import React, { useState, Suspense } from 'react';
+import Image from 'next/image';
 import Button from '@/app/components/ui/Button';
 import UpiPaymentModal from '@/app/components/ui/UpiPaymentModal';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useCart, CartItem } from '@/lib/CartContext';
 
 function CheckoutForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const variantId = searchParams.get('product') || 'luxe-royal-gold';
-  const isChrono = variantId === 'luxe-royal-chrono';
+  const fromCart = searchParams.get('from') === 'cart';
+  const paramVariantId = searchParams.get('product') || 'luxe-royal-gold';
+
+  const { items: cartItems, subtotal: cartSubtotal, clearCart } = useCart();
+
+  // Determine items to checkout
+  const checkoutItems: CartItem[] =
+    fromCart && cartItems.length > 0
+      ? cartItems
+      : [
+          {
+            id: paramVariantId,
+            name:
+              paramVariantId === 'luxe-royal-chrono'
+                ? 'TANDO Luxe Royal Chrono Watch Combo'
+                : 'TANDO Luxe Royal Gold Watch Combo',
+            price: 499,
+            quantity: 1,
+            image:
+              paramVariantId === 'luxe-royal-chrono'
+                ? '/black-combo.jpg'
+                : '/gold-combo.jpg',
+          },
+        ];
+
+  const subtotal = checkoutItems.reduce(
+    (acc, it) => acc + it.price * it.quantity,
+    0
+  );
 
   const [paymentMethod, setPaymentMethod] = useState<'online' | 'cod'>('online');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -18,7 +47,7 @@ function CheckoutForm() {
   // UPI QR Modal State
   const [showUpiModal, setShowUpiModal] = useState(false);
   const [activeOrderNumber, setActiveOrderNumber] = useState<string>('');
-  const [activeOrderAmount, setActiveOrderAmount] = useState<number>(499);
+  const [activeOrderAmount, setActiveOrderAmount] = useState<number>(subtotal);
 
   // Form Fields State
   const [formData, setFormData] = useState({
@@ -64,8 +93,7 @@ function CheckoutForm() {
             state: formData.state,
           },
           paymentMethod: 'online',
-          variantId: variantId,
-          quantity: 1,
+          items: checkoutItems,
         }),
       });
 
@@ -75,9 +103,9 @@ function CheckoutForm() {
         throw new Error(orderData.error || 'Failed to initialize order.');
       }
 
-      // 2. Open UPI QR Modal with generated Order Number
+      // 2. Open UPI QR Modal with generated Order Number and dynamic amount
       setActiveOrderNumber(orderData.order_number);
-      setActiveOrderAmount(orderData.amount || 499);
+      setActiveOrderAmount(orderData.amount || subtotal);
       setShowUpiModal(true);
       setIsProcessing(false);
     } catch (err: unknown) {
@@ -112,8 +140,7 @@ function CheckoutForm() {
             state: formData.state,
           },
           paymentMethod: 'cod',
-          variantId: variantId,
-          quantity: 1,
+          items: checkoutItems,
         }),
       });
 
@@ -123,6 +150,7 @@ function CheckoutForm() {
         throw new Error(orderData.error || 'Failed to place COD order.');
       }
 
+      clearCart();
       router.push(`/success?order_id=${orderData.order_number}&method=cod`);
     } catch (err: unknown) {
       console.error('COD placement error:', err);
@@ -144,12 +172,16 @@ function CheckoutForm() {
 
   const handlePaymentSuccess = (orderNumber: string, paymentRef: string) => {
     setShowUpiModal(false);
+    clearCart();
     router.push(
       `/success?order_id=${encodeURIComponent(orderNumber)}&payment_id=${encodeURIComponent(
         paymentRef
       )}&method=online`
     );
   };
+
+  const codFee = paymentMethod === 'cod' ? 50 : 0;
+  const totalAmount = subtotal + codFee;
 
   return (
     <>
@@ -298,7 +330,7 @@ function CheckoutForm() {
                 />
                 <div className="payment-details">
                   <span className="payment-title">Cash on Delivery (COD)</span>
-                  <span className="payment-desc">Pay ₹549 cash when your order arrives</span>
+                  <span className="payment-desc">Pay ₹{subtotal + 50} cash upon delivery</span>
                 </div>
               </label>
             </div>
@@ -311,29 +343,27 @@ function CheckoutForm() {
             <h2>Order Summary</h2>
 
             <div className="checkout-items">
-              <div className="checkout-item-compact">
-                <div
-                  className="checkout-item-img"
-                  style={{
-                    backgroundImage: `url(${isChrono ? '/black-combo.jpg' : '/gold-combo.jpg'})`,
-                  }}
-                >
-                  <span className="checkout-item-qty">1</span>
-                </div>
-                <div className="checkout-item-info">
-                  <div className="checkout-item-name">
-                    {isChrono
-                      ? 'TANDO Luxe Royal Chrono Watch Combo'
-                      : 'TANDO Luxe Royal Gold Watch Combo'}
+              {checkoutItems.map((it) => (
+                <div key={it.id} className="checkout-item-compact">
+                  <div
+                    className="checkout-item-img"
+                    style={{
+                      backgroundImage: `url(${it.image})`,
+                    }}
+                  >
+                    <span className="checkout-item-qty">{it.quantity}</span>
                   </div>
-                  <div className="checkout-item-price">₹499</div>
+                  <div className="checkout-item-info">
+                    <div className="checkout-item-name">{it.name}</div>
+                    <div className="checkout-item-price">₹{it.price * it.quantity}</div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
 
             <div className="summary-row">
               <span>Subtotal</span>
-              <span>₹499</span>
+              <span>₹{subtotal}</span>
             </div>
             <div className="summary-row">
               <span>Shipping</span>
@@ -347,7 +377,7 @@ function CheckoutForm() {
             )}
             <div className="summary-total">
               <span>Total to Pay</span>
-              <span>{paymentMethod === 'cod' ? '₹549' : '₹499'}</span>
+              <span>₹{totalAmount}</span>
             </div>
 
             {errorMessage && (
@@ -377,8 +407,8 @@ function CheckoutForm() {
               {isProcessing
                 ? 'Preparing Payment...'
                 : paymentMethod === 'online'
-                ? 'Proceed to Pay ₹499'
-                : 'Place Order (₹549)'}
+                ? `Proceed to Pay ₹${subtotal}`
+                : `Place Order (₹${totalAmount})`}
             </Button>
 
             <div className="checkout-trust">
@@ -423,4 +453,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-

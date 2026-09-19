@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     // 1. Fetch order from Supabase
     const { data: orderData, error: orderFetchError } = await supabase
       .from('orders')
-      .select('id, order_number, total_amount, status')
+      .select('id, order_number, total_amount, status, shipping_address_id')
       .eq('order_number', order_number)
       .maybeSingle();
 
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
         .from('orders')
         .update({
           status: 'CONFIRMED',
-          payment_method: 'ONLINE_UPI',
+          payment_method: 'ONLINE_RAZORPAY',
         })
         .eq('id', orderId);
 
@@ -49,6 +49,8 @@ export async function POST(request: Request) {
           .from('payments')
           .update({
             status: 'CAPTURED',
+            payment_method: 'ONLINE_RAZORPAY',
+            gateway: 'UPI_QR',
             gateway_payment_id: paymentRef,
             verified_at: new Date().toISOString(),
           })
@@ -56,7 +58,7 @@ export async function POST(request: Request) {
       } else {
         await supabase.from('payments').insert({
           order_id: orderId,
-          payment_method: 'ONLINE_UPI',
+          payment_method: 'ONLINE_RAZORPAY',
           gateway: 'UPI_QR',
           gateway_order_id: order_number,
           gateway_payment_id: paymentRef,
@@ -67,7 +69,7 @@ export async function POST(request: Request) {
         });
       }
 
-      // 4. Create Shipment and Tracking Events
+      // 4. Create Shipment and Tracking Events if not already existing
       const { data: existingShipment } = await supabase
         .from('shipments')
         .select('id')

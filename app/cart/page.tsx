@@ -4,55 +4,59 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Button from '@/app/components/ui/Button';
-import { Minus, Plus, Trash2 } from 'lucide-react';
-
-const MOCK_CART_ITEMS = [
-  {
-    id: 'luxe-royal-gold',
-    name: 'TANDO Luxe Royal Gold Watch Combo',
-    price: 499,
-    quantity: 1,
-    image: '/gold-combo.jpg'
-  },
-  {
-    id: 'luxe-royal-chrono',
-    name: 'TANDO Luxe Royal Chrono Watch Combo',
-    price: 499,
-    quantity: 1,
-    image: '/black-combo.jpg'
-  }
-];
+import { Minus, Plus, Trash2, ShoppingBag, ShieldCheck, Truck } from 'lucide-react';
+import { useCart } from '@/lib/CartContext';
 
 export default function CartPage() {
-  const [items, setItems] = useState(MOCK_CART_ITEMS);
+  const { items, updateQuantity, removeItem, subtotal } = useCart();
   const [coupon, setCoupon] = useState('');
+  const [couponMsg, setCouponMsg] = useState<string | null>(null);
 
-  const updateQuantity = (id: string, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    setItems(items.map(item => item.id === id ? { ...item, quantity: newQuantity } : item));
+  const shipping = 0; // 100% Free Shipping
+  const total = subtotal;
+
+  const handleApplyCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!coupon.trim()) return;
+    if (coupon.trim().toUpperCase() === 'TANDO50') {
+      setCouponMsg('Coupon TANDO50 applied! (Free express delivery active)');
+    } else {
+      setCouponMsg('Invalid coupon code. Special launch pricing (₹499) already active.');
+    }
   };
-
-  const removeItem = (id: string) => {
-    setItems(items.filter(item => item.id !== id));
-  };
-
-  const subtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-  const shipping = subtotal > 0 ? 0 : 0; // Free shipping
-  const total = subtotal + shipping;
 
   return (
     <div className="cart-page animate-fade-in section">
       <div className="container">
-        <h1 className="page-title">Your Cart</h1>
-        
+        <h1 className="page-title">Shopping Cart</h1>
+
         {items.length === 0 ? (
-          <div className="empty-cart text-center">
-            <p className="text-light" style={{ marginBottom: '2rem' }}>Your cart is currently empty.</p>
-            <Button href="/shop" variant="gold">Continue Shopping</Button>
+          <div className="empty-cart text-center" style={{ padding: '4rem 1rem' }}>
+            <div
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: '50%',
+                background: 'rgba(197, 160, 89, 0.1)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '1.5rem',
+                color: 'var(--color-gold, #c5a059)',
+              }}
+            >
+              <ShoppingBag size={40} />
+            </div>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Your Cart is Empty</h2>
+            <p className="text-light" style={{ marginBottom: '2rem', maxWidth: '400px', margin: '0 auto 2rem auto' }}>
+              Looks like you haven&apos;t added any luxury combos yet. Discover our signature watch and jewelry sets!
+            </p>
+            <Button href="/shop" variant="gold">
+              Explore Collection
+            </Button>
           </div>
         ) : (
           <div className="cart-grid">
-            
             {/* Cart Items */}
             <div className="cart-items-section">
               <div className="cart-header hidden-mobile">
@@ -61,47 +65,72 @@ export default function CartPage() {
                 <div className="col-quantity">Quantity</div>
                 <div className="col-total">Total</div>
               </div>
-              
+
               <div className="cart-items">
-                {items.map(item => (
+                {items.map((item) => (
                   <div key={item.id} className="cart-item">
                     <div className="col-product item-product">
                       <div className="item-image">
-                        <Image src={item.image} alt={item.name} fill style={{ objectFit: 'cover' }} />
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          fill
+                          sizes="90px"
+                          style={{ objectFit: 'cover' }}
+                        />
                       </div>
                       <div className="item-details">
-                        <Link href={`/product/${item.id}`} className="item-name">{item.name}</Link>
-                        <button onClick={() => removeItem(item.id)} className="item-remove-mobile">
+                        <Link href={`/product/${item.id}`} className="item-name">
+                          {item.name}
+                        </Link>
+                        <button
+                          onClick={() => removeItem(item.id)}
+                          className="item-remove-mobile"
+                        >
                           <Trash2 size={16} /> Remove
                         </button>
                       </div>
                     </div>
-                    
-                    <div className="col-price item-price">
-                      ₹{item.price}
-                    </div>
-                    
+
+                    <div className="col-price item-price">₹{item.price}</div>
+
                     <div className="col-quantity item-quantity">
                       <div className="quantity-selector">
-                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)}><Minus size={14} /></button>
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          aria-label="Decrease quantity"
+                        >
+                          <Minus size={14} />
+                        </button>
                         <span>{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)}><Plus size={14} /></button>
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          aria-label="Increase quantity"
+                        >
+                          <Plus size={14} />
+                        </button>
                       </div>
                     </div>
-                    
+
                     <div className="col-total item-total">
                       ₹{item.price * item.quantity}
                     </div>
-                    
-                    <button onClick={() => removeItem(item.id)} className="item-remove-desktop">
+
+                    <button
+                      onClick={() => removeItem(item.id)}
+                      className="item-remove-desktop"
+                      aria-label="Remove item"
+                    >
                       <Trash2 size={18} />
                     </button>
                   </div>
                 ))}
               </div>
-              
+
               <div className="cart-actions-bottom">
-                <Button variant="outline" href="/shop">Continue Shopping</Button>
+                <Button variant="outline" href="/shop">
+                  Continue Shopping
+                </Button>
               </div>
             </div>
 
@@ -109,44 +138,62 @@ export default function CartPage() {
             <div className="cart-summary-section">
               <div className="summary-box">
                 <h2>Order Summary</h2>
-                
+
                 <div className="summary-row">
-                  <span>Subtotal</span>
+                  <span>Subtotal ({items.reduce((a, b) => a + b.quantity, 0)} items)</span>
                   <span>₹{subtotal}</span>
                 </div>
-                
+
                 <div className="summary-row">
                   <span>Shipping</span>
-                  <span>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span>
+                  <span className="gold-text font-bold">FREE</span>
                 </div>
-                
+
                 <div className="summary-total">
                   <span>Total</span>
                   <span>₹{total}</span>
                 </div>
-                
-                <div className="coupon-section">
-                  <input 
-                    type="text" 
-                    placeholder="Enter Coupon Code" 
+
+                <form onSubmit={handleApplyCoupon} className="coupon-section">
+                  <input
+                    type="text"
+                    placeholder="Enter Coupon (e.g. TANDO50)"
                     value={coupon}
                     onChange={(e) => setCoupon(e.target.value)}
                     className="coupon-input"
                   />
-                  <button className="coupon-btn">Apply</button>
-                </div>
-                
-                <Button variant="primary" isFullWidth href="/checkout" className="checkout-btn">
-                  Proceed to Checkout
+                  <button type="submit" className="coupon-btn">
+                    Apply
+                  </button>
+                </form>
+
+                {couponMsg && (
+                  <p style={{ fontSize: '0.75rem', color: '#10b981', margin: '0 0 1rem 0' }}>
+                    {couponMsg}
+                  </p>
+                )}
+
+                <Button
+                  variant="primary"
+                  isFullWidth
+                  href="/checkout?from=cart"
+                  className="checkout-btn"
+                >
+                  Proceed to Checkout (₹{total})
                 </Button>
-                
+
                 <div className="checkout-trust">
-                  <p>🔒 Secure Checkout</p>
-                  <p>💳 COD Available</p>
+                  <p>
+                    <ShieldCheck size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />
+                    100% Encrypted UPI & COD Available
+                  </p>
+                  <p>
+                    <Truck size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />
+                    Fast Express Delivery (4-7 Days)
+                  </p>
                 </div>
               </div>
             </div>
-
           </div>
         )}
       </div>

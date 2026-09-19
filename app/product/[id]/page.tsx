@@ -7,6 +7,7 @@ import ReviewCard from '@/app/components/ui/ReviewCard';
 import { Star, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useCart } from '@/lib/CartContext';
 
 interface ProductItem {
   id: string;
@@ -117,6 +118,7 @@ const PRODUCTS: Record<string, ProductItem> = {
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
   const router = useRouter();
+  const { addToCart } = useCart();
   const PRODUCT = PRODUCTS[id] || PRODUCTS['luxe-royal-gold'];
   
   // Define which product ID each image corresponds to
@@ -212,8 +214,24 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             </div>
 
             <div className="product-actions-large">
-              <Button variant="outline" isFullWidth className="pdp-btn">Add to Cart</Button>
-              <Button variant="primary" isFullWidth href={`/checkout?product=${PRODUCT.id}`} className="pdp-btn">Buy at ₹499</Button>
+              <Button
+                variant="outline"
+                isFullWidth
+                className="pdp-btn"
+                onClick={() =>
+                  addToCart({
+                    id: PRODUCT.id,
+                    name: PRODUCT.name,
+                    price: PRODUCT.price,
+                    image: PRODUCT.images[0],
+                  })
+                }
+              >
+                Add to Cart
+              </Button>
+              <Button variant="primary" isFullWidth href={`/checkout?product=${PRODUCT.id}`} className="pdp-btn">
+                Buy at ₹499
+              </Button>
             </div>
           </div>
         </div>
