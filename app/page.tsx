@@ -1,69 +1,117 @@
-import Image from "next/image";
+import React from 'react';
+import Button from './components/ui/Button';
+import ProductCard from './components/ui/ProductCard';
+import FeatureCard from './components/ui/FeatureCard';
+import { ShieldCheck, Truck, Clock, Gem } from 'lucide-react';
+
+// Mock data for the two required products
+const PRODUCTS = [
+  {
+    id: 'luxe-royal-gold',
+    name: 'TANDO Luxe Royal Gold Watch Combo — Watch + Chain + Ring',
+    shortDescription: 'Complete 3-piece men\'s accessory combo featuring a stylish fashion watch, statement chain and gold-tone ring.',
+    price: 499,
+    originalPrice: 1499,
+    discountPercentage: 66,
+    rating: 4.1,
+    reviewCount: 1575,
+    image: '/gold-combo.jpg' // Placeholder
+  },
+  {
+    id: 'luxe-royal-chrono',
+    name: 'TANDO Luxe Royal Chrono Watch Combo — Watch + Chain + Ring',
+    shortDescription: 'Make a bold statement with a stylish chronograph-inspired watch, statement chain and classic gold-tone ring.',
+    price: 499,
+    originalPrice: 1499,
+    discountPercentage: 66,
+    rating: 4.1,
+    reviewCount: 1575,
+    image: '/black-combo.jpg' // Placeholder
+  }
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="animate-fade-in">
+      
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="hero-overlay"></div>
+        <div className="container hero-content">
+          <h1 className="hero-title">STYLE THAT SPEAKS FOR YOU.</h1>
+          <p className="hero-subtitle">
+            Discover premium-inspired men&apos;s watch & jewellery combos designed to elevate your everyday look.
           </p>
+          <div className="hero-actions">
+            <Button variant="gold" href="/shop">SHOP COLLECTION</Button>
+            <Button variant="outline" href="/shop" style={{ borderColor: 'white', color: 'white' }}>EXPLORE COMBOS</Button>
+          </div>
+          
+          <div className="hero-trust">
+            <span>✓ COD Available</span>
+            <span>✓ Secure Payments</span>
+            <span>✓ Easy Returns</span>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+      </section>
+
+      {/* Featured Collection Section */}
+      <section className="section bg-off-white">
+        <div className="container">
+          <div className="section-header text-center">
+            <h2>THE TANDO COLLECTION</h2>
+            <p className="text-light">Complete your look with our signature men&apos;s accessory combos.</p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-xl max-w-4xl mx-auto" style={{ maxWidth: '900px', margin: '0 auto' }}>
+            {PRODUCTS.map(product => (
+              <ProductCard key={product.id} {...product} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Tando Section */}
+      <section className="section">
+        <div className="container">
+          <div className="section-header text-center" style={{ marginBottom: '3rem' }}>
+            <h2>WHY CHOOSE TANDO?</h2>
+          </div>
+          
+          <div className="grid grid-cols-4 gap-lg">
+            <FeatureCard 
+              icon={<Gem size={32} />}
+              title="PREMIUM STYLE"
+              description="Modern accessories designed to elevate your look."
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <FeatureCard 
+              icon={<ShieldCheck size={32} />}
+              title="COMPLETE COMBOS"
+              description="Watch + chain + ring in one coordinated set."
+            />
+            <FeatureCard 
+              icon={<Truck size={32} />}
+              title="COD AVAILABLE"
+              description="Convenient Cash on Delivery across eligible locations."
+            />
+            <FeatureCard 
+              icon={<Clock size={32} />}
+              title="SECURE CHECKOUT"
+              description="Safe and convenient online payment options."
+            />
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Offer Banner Section */}
+      <section className="offer-banner">
+        <div className="container text-center">
+          <h2 className="offer-title">COMPLETE YOUR LOOK.</h2>
+          <p className="offer-text">Get the TANDO watch + chain + ring combo and upgrade your everyday style.</p>
+          <Button variant="gold" href="/shop">SHOP NOW</Button>
+        </div>
+      </section>
+
     </div>
   );
 }
