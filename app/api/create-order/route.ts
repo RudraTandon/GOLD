@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import Razorpay from 'razorpay';
 import { supabase } from '@/lib/supabaseClient';
 
 export async function POST(request: Request) {
@@ -61,7 +60,7 @@ export async function POST(request: Request) {
 
     // 2. Insert Order into Supabase
     const initialStatus = isCod ? 'CONFIRMED' : 'PENDING_PAYMENT';
-    const dbPaymentMethod = isCod ? 'CASH_ON_DELIVERY' : 'ONLINE_RAZORPAY';
+    const dbPaymentMethod = isCod ? 'CASH_ON_DELIVERY' : 'ONLINE_UPI';
 
     const { data: orderData, error: orderError } = await supabase
       .from('orders')
@@ -151,42 +150,17 @@ export async function POST(request: Request) {
       });
     }
 
-    // 5. Handle Online Payment with Razorpay
-    const key_id = process.env.RAZORPAY_KEY_ID;
-    const key_secret = process.env.RAZORPAY_KEY_SECRET;
-
-    if (!key_id || !key_secret) {
-      return NextResponse.json(
-        { error: 'Razorpay credentials are not configured on the server.' },
-        { status: 500 }
-      );
-    }
-
-    const razorpay = new Razorpay({
-      key_id,
-      key_secret,
-    });
-
-    const razorpayAmount = Math.round(totalAmount * 100); // in paise (e.g. 49900)
-
-    const razorpayOrder = await razorpay.orders.create({
-      amount: razorpayAmount,
-      currency: 'INR',
-      receipt: orderNumber,
-      notes: {
-        order_number: orderNumber,
-        customer_phone: mobile,
-        customer_name: fullName,
-      },
-    });
+    // 5. Handle Online Payment with UPI QR Code
+    const upiId = 'rudratandon2007@oksbi';
+    const payeeName = 'Rudra Tandon';
 
     // Save pending payment record in Supabase
     if (orderId) {
       await supabase.from('payments').insert({
         order_id: orderId,
-        payment_method: 'ONLINE_RAZORPAY',
-        gateway: 'RAZORPAY',
-        gateway_order_id: razorpayOrder.id,
+        payment_method: 'ONLINE_UPI',
+        gateway: 'UPI_QR',
+        gateway_order_id: orderNumber,
         amount: totalAmount,
         currency: 'INR',
         status: 'PENDING',
@@ -195,10 +169,14 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      order_id: razorpayOrder.id,
+      order_id: orderNumber,
       order_number: orderNumber,
-      amount: razorpayOrder.amount,
-      currency: razorpayOrder.currency,
+      amount: totalAmount,
+      currency: 'INR',
+      payment_method: 'online_upi',
+      upi_id: upiId,
+      payee_name: payeeName,
+      qr_image: '/upi-qr.jpg',
     });
   } catch (error: unknown) {
     console.error('Error in create-order route:', error);

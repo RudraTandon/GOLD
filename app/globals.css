@@ -1580,3 +1580,671 @@ p {
   font-size: 0.8rem;
   color: var(--color-text-light);
 }
+
+/* ==========================================================================
+   UPI QR PAYMENT MODAL & LUXURY CELEBRATION STYLES
+   ========================================================================== */
+
+.badge-online-save {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.upi-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(10, 10, 10, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.upi-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: #111111;
+  border: 1px solid rgba(197, 160, 89, 0.35);
+  border-radius: 16px;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 35px rgba(197, 160, 89, 0.12);
+  color: #f3f4f6;
+  padding: 1.5rem;
+  overflow: hidden;
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+/* Modal Header */
+.upi-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.upi-modal-header .brand-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--color-gold, #c5a059);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.upi-modal-header .modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #9ca3af;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.close-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* Timer Box */
+.upi-timer-box {
+  background: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.timer-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.timer-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #9ca3af;
+}
+
+.timer-icon {
+  color: var(--color-gold, #c5a059);
+}
+
+.timer-digits {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+  color: var(--color-gold, #c5a059);
+  letter-spacing: 0.05em;
+}
+
+.timer-digits.timer-urgent {
+  color: #ef4444;
+  animation: urgentBlink 1s infinite alternate;
+}
+
+@keyframes urgentBlink {
+  from { opacity: 1; }
+  to { opacity: 0.5; }
+}
+
+.timer-progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.timer-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #c5a059, #f59e0b);
+  border-radius: 999px;
+  transition: width 1s linear;
+}
+
+.timer-progress-bar.bar-urgent {
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+}
+
+/* QR Code Container */
+.upi-qr-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 0.75rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.qr-image-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.upi-qr-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.upi-summary-badge {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+}
+
+.upi-summary-badge .amount-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.upi-summary-badge .amount-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+/* Mobile UPI Launch */
+.mobile-upi-launch {
+  margin-bottom: 0.75rem;
+}
+
+.btn-upi-app {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+}
+
+.btn-upi-app:active {
+  transform: scale(0.98);
+}
+
+/* UPI ID Row */
+.upi-id-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(25, 25, 25, 0.9);
+  border: 1px dashed rgba(197, 160, 89, 0.4);
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  margin-bottom: 0.85rem;
+}
+
+.upi-id-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.upi-id-label {
+  font-size: 0.7rem;
+  color: #9ca3af;
+}
+
+.upi-id-val {
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+  color: var(--color-gold, #c5a059);
+}
+
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(197, 160, 89, 0.12);
+  color: var(--color-gold, #c5a059);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  padding: 0.35rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+  background: rgba(197, 160, 89, 0.25);
+  color: #ffffff;
+}
+
+.copy-btn.copied {
+  background: #10b981;
+  color: #ffffff;
+  border-color: #10b981;
+}
+
+/* UTR Input Group */
+.utr-input-group {
+  margin-bottom: 1rem;
+}
+
+.utr-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+
+.utr-input {
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+  transition: border-color 0.2s;
+}
+
+.utr-input:focus {
+  outline: none;
+  border-color: var(--color-gold, #c5a059);
+  box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.2);
+}
+
+.utr-hint {
+  display: block;
+  font-size: 0.68rem;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.upi-error-alert {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  margin-bottom: 0.85rem;
+}
+
+/* Buttons */
+.btn-primary-gold {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: linear-gradient(135deg, #d4af37 0%, #aa8022 100%);
+  color: #000000;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(197, 160, 89, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-primary-gold:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(197, 160, 89, 0.5);
+  background: linear-gradient(135deg, #f0ca4d 0%, #b88a28 100%);
+}
+
+.btn-primary-gold:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary-gold:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-outline-gold {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: transparent;
+  color: var(--color-gold, #c5a059);
+  border: 1px solid rgba(197, 160, 89, 0.5);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-gold:hover {
+  background: rgba(197, 160, 89, 0.1);
+  border-color: var(--color-gold, #c5a059);
+}
+
+.btn-text-cancel {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.2s;
+}
+
+.btn-text-cancel:hover {
+  color: #9ca3af;
+}
+
+.spinner-sm {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top-color: #000000;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.upi-footer-trust {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.7rem;
+  color: #6b7280;
+}
+
+/* ==========================================================================
+   EXPIRED / RETRY VIEW
+   ========================================================================== */
+.upi-expired-view {
+  text-align: center;
+  padding: 1.5rem 0.5rem;
+}
+
+.expired-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 2px solid rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  border-radius: 50%;
+  margin-bottom: 1.25rem;
+}
+
+.expired-heading {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.expired-desc {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.expired-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ==========================================================================
+   SUCCESS CELEBRATION VIEW
+   ========================================================================== */
+.upi-success-view {
+  position: relative;
+  text-align: center;
+  padding: 1.5rem 0.5rem;
+  overflow: hidden;
+}
+
+/* Animated Checkmark SVG */
+.success-checkmark-wrapper {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-pulse-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(197, 160, 89, 0.5);
+  animation: ringPulse 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+.success-pulse-ring.ring-2 {
+  animation-delay: 0.6s;
+}
+
+@keyframes ringPulse {
+  0% {
+    transform: scale(0.7);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.checkmark-svg {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 3;
+  stroke: #d4af37;
+  stroke-miterlimit: 10;
+  box-shadow: inset 0 0 0 #d4af37;
+  animation: fillGlow 0.4s ease-in-out 0.4s forwards, scaleBounce 0.3s ease-in-out 0.9s both;
+}
+
+.checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 3;
+  stroke-miterlimit: 10;
+  stroke: #d4af37;
+  fill: rgba(197, 160, 89, 0.12);
+  animation: strokeCircle 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  stroke: #ffffff;
+  animation: strokeCheck 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+}
+
+@keyframes strokeCircle {
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes strokeCheck {
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes scaleBounce {
+  0%, 100% { transform: none; }
+  50% { transform: scale3d(1.1, 1.1, 1); }
+}
+
+.success-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--color-gold, #c5a059);
+  background: rgba(197, 160, 89, 0.12);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 0.5rem;
+}
+
+.success-heading {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.5rem;
+}
+
+.success-subheading {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  line-height: 1.4;
+  margin: 0 auto 1.25rem;
+  max-width: 340px;
+}
+
+.success-order-box {
+  background: rgba(22, 22, 22, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.success-order-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0;
+  font-size: 0.85rem;
+}
+
+.status-confirmed-pill {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+}
+
+.redirect-hint {
+  font-size: 0.75rem;
+  color: #6b7280;
+  animation: hintPulse 1.5s infinite alternate;
+}
+
+@keyframes hintPulse {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
+/* Floating Confetti Particles */
+.celebration-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  top: -10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  opacity: 0.9;
+  animation: confettiFall 2.8s ease-in-out infinite;
+}
+
+.particle-0 { background: #d4af37; transform: rotate(15deg); }
+.particle-1 { background: #f59e0b; width: 6px; height: 10px; }
+.particle-2 { background: #10b981; transform: rotate(45deg); }
+.particle-3 { background: #ffffff; width: 7px; height: 7px; }
+.particle-4 { background: #fbbf24; transform: rotate(60deg); }
+.particle-5 { background: #e5e7eb; width: 5px; height: 9px; }
+
+@keyframes confettiFall {
+  0% {
+    top: -10px;
+    transform: translateY(0) rotate(0deg) scale(0.8);
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    top: 105%;
+    transform: translateY(100px) rotate(720deg) scale(1.1);
+    opacity: 0;
+  }
+}
+

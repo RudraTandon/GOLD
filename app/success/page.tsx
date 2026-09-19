@@ -21,7 +21,7 @@ function SuccessDetails() {
         </div>
         {paymentId && (
           <div className="order-row">
-            <span className="order-label">Razorpay Payment ID</span>
+            <span className="order-label">UPI Reference / Ref</span>
             <span className="order-value" style={{ fontFamily: 'monospace', fontSize: '0.9rem' }}>{paymentId}</span>
           </div>
         )}
@@ -32,7 +32,7 @@ function SuccessDetails() {
         <div className="order-row">
           <span className="order-label">Payment Method</span>
           <span className="order-value">
-            {isOnline ? 'Secure Online Payment (Razorpay)' : 'Cash on Delivery (COD)'}
+            {isOnline ? 'Instant UPI Payment (Direct QR)' : 'Cash on Delivery (COD)'}
           </span>
         </div>
         <div className="order-row">
